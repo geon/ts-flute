@@ -1,4 +1,4 @@
-import { SynthGenerator, createGeneratorProcessor } from "./syth-api";
+import { SynthGenerator, createGeneratorProcessor } from "./synth-api";
 import { customSynthProcessorKey } from "./processor-keys";
 
 function frequencyFromMidiNoteNumber(noteNumber: number): number {

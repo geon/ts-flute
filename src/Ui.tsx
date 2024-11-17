@@ -1,5 +1,5 @@
 import React from "react";
-import { createSynth, Synth } from "./syth-api";
+import { createSynth, Synth } from "./synth-api";
 import { customSynthProcessorKey } from "./processor-keys";
 
 const middleCMidiNumber = 60;
