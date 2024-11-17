@@ -1,11 +1,9 @@
-import { MidiMessage } from "./midi-message";
+import { SynthGenerator, createGeneratorProcessor } from "./syth-api";
 import { customSynthProcessorKey } from "./processor-keys";
 
 function frequencyFromMidiNoteNumber(noteNumber: number): number {
 	return 440 * Math.pow(2, (noteNumber - 69) / 12);
 }
-
-type SynthGenerator = Generator<number, never, MidiMessage | undefined>;
 
 function* makeSawToothOscilator(sampleRate: number): SynthGenerator {
 	let periodRatio = 0;
@@ -39,46 +37,3 @@ function* makeSawToothOscilator(sampleRate: number): SynthGenerator {
 }
 
 createGeneratorProcessor(customSynthProcessorKey, makeSawToothOscilator);
-
-export interface ProcessorOptions {
-	sampleRate: number;
-}
-
-function createGeneratorProcessor(
-	processorKey: string,
-	createSynthGenerator: (sampleRate: number) => SynthGenerator
-) {
-	class GeneratorProcessor extends AudioWorkletProcessor {
-		toneOscilator: SynthGenerator;
-		midiMessages: MidiMessage[] = [];
-
-		constructor({ processorOptions }: { processorOptions: ProcessorOptions }) {
-			super();
-			this.toneOscilator = createSynthGenerator(processorOptions.sampleRate);
-			// Prime the generator so it is ready to receive events.
-			this.toneOscilator.next();
-			this.port.onmessage = (event: MessageEvent<MidiMessage>): void => {
-				this.midiMessages.push(event.data);
-			};
-		}
-
-		process(
-			_inputs: Float32Array[][],
-			outputs: Float32Array[][],
-			_parameters: Record<string, Float32Array>
-		) {
-			const channel = outputs[0]?.[0];
-			if (!channel) {
-				throw new Error("Missing channel.");
-			}
-
-			for (let i = 0; i < channel.length; i++) {
-				channel[i] = this.toneOscilator.next(this.midiMessages.shift()).value;
-			}
-
-			return true;
-		}
-	}
-
-	registerProcessor(processorKey, GeneratorProcessor);
-}
