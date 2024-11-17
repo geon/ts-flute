@@ -11,16 +11,10 @@ export class Synth {
 
 export async function createSynth(processorKey: string): Promise<Synth> {
 	const context = new AudioContext();
-
-	// The context refuzes to play unless `resume` is called in a user input event handler.
-	context.resume();
-
 	await context.audioWorklet.addModule(generatorProcessorUrl);
-
 	const processorOptions: ProcessorOptions = { sampleRate: context.sampleRate };
 	const options: AudioWorkletNodeOptions = { processorOptions };
 	const audioWorkletNode = new AudioWorkletNode(context, processorKey, options);
-
 	audioWorkletNode.connect(context.destination);
 	return new Synth(audioWorkletNode);
 }
