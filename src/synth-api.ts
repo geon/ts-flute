@@ -12,7 +12,7 @@ function makeAudioWorkletNode(context: AudioContext, processorKey: string) {
 	return oscillatorProcessor;
 }
 
-export class Synth {
+class Synth {
 	constructor(private audioWorkletNode: AudioWorkletNode) {}
 
 	postMessage(message: MidiMessage): void {
@@ -34,7 +34,7 @@ export async function createSynth(processorKey: string): Promise<Synth> {
 
 export type SynthGenerator = Generator<number, never, MidiMessage | undefined>;
 
-export interface ProcessorOptions {
+interface ProcessorOptions {
 	sampleRate: number;
 }
 
