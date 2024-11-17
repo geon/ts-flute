@@ -38,40 +38,47 @@ function* makeSawToothOscilator(sampleRate: number): SynthGenerator {
 	}
 }
 
+createGeneratorProcessor(customSynthProcessorKey, makeSawToothOscilator);
+
 export interface ProcessorOptions {
 	sampleRate: number;
 }
 
-class GeneratorProcessor extends AudioWorkletProcessor {
-	toneOscilator: SynthGenerator;
-	midiMessages: MidiMessage[] = [];
+function createGeneratorProcessor(
+	processorKey: string,
+	createSynthGenerator: (sampleRate: number) => SynthGenerator
+) {
+	class GeneratorProcessor extends AudioWorkletProcessor {
+		toneOscilator: SynthGenerator;
+		midiMessages: MidiMessage[] = [];
 
-	constructor({ processorOptions }: { processorOptions: ProcessorOptions }) {
-		super();
-		this.toneOscilator = makeSawToothOscilator(processorOptions.sampleRate);
-		// Prime the generator so it is ready to receive events.
-		this.toneOscilator.next();
-		this.port.onmessage = (event: MessageEvent<MidiMessage>): void => {
-			this.midiMessages.push(event.data);
-		};
-	}
-
-	process(
-		_inputs: Float32Array[][],
-		outputs: Float32Array[][],
-		_parameters: Record<string, Float32Array>
-	) {
-		const channel = outputs[0]?.[0];
-		if (!channel) {
-			throw new Error("Missing channel.");
+		constructor({ processorOptions }: { processorOptions: ProcessorOptions }) {
+			super();
+			this.toneOscilator = createSynthGenerator(processorOptions.sampleRate);
+			// Prime the generator so it is ready to receive events.
+			this.toneOscilator.next();
+			this.port.onmessage = (event: MessageEvent<MidiMessage>): void => {
+				this.midiMessages.push(event.data);
+			};
 		}
 
-		for (let i = 0; i < channel.length; i++) {
-			channel[i] = this.toneOscilator.next(this.midiMessages.shift()).value;
-		}
+		process(
+			_inputs: Float32Array[][],
+			outputs: Float32Array[][],
+			_parameters: Record<string, Float32Array>
+		) {
+			const channel = outputs[0]?.[0];
+			if (!channel) {
+				throw new Error("Missing channel.");
+			}
 
-		return true;
+			for (let i = 0; i < channel.length; i++) {
+				channel[i] = this.toneOscilator.next(this.midiMessages.shift()).value;
+			}
+
+			return true;
+		}
 	}
+
+	registerProcessor(processorKey, GeneratorProcessor);
 }
-
-registerProcessor(customSynthProcessorKey, GeneratorProcessor);
