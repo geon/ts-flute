@@ -1,17 +1,6 @@
 import generatorProcessorUrl from "./custom-synth-processor?worker&url";
 import { MidiMessage } from "./midi-message";
 
-function makeAudioWorkletNode(context: AudioContext, processorKey: string) {
-	const processorOptions: ProcessorOptions = { sampleRate: context.sampleRate };
-	const options: AudioWorkletNodeOptions = { processorOptions };
-	const oscillatorProcessor = new AudioWorkletNode(
-		context,
-		processorKey,
-		options
-	);
-	return oscillatorProcessor;
-}
-
 class Synth {
 	constructor(private audioWorkletNode: AudioWorkletNode) {}
 
@@ -27,7 +16,11 @@ export async function createSynth(processorKey: string): Promise<Synth> {
 	context.resume();
 
 	await context.audioWorklet.addModule(generatorProcessorUrl);
-	const audioWorkletNode = makeAudioWorkletNode(context, processorKey);
+
+	const processorOptions: ProcessorOptions = { sampleRate: context.sampleRate };
+	const options: AudioWorkletNodeOptions = { processorOptions };
+	const audioWorkletNode = new AudioWorkletNode(context, processorKey, options);
+
 	audioWorkletNode.connect(context.destination);
 	return new Synth(audioWorkletNode);
 }
