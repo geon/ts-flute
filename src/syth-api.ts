@@ -14,12 +14,15 @@ function makeAudioWorkletNode(context: AudioContext, processorKey: string) {
 	return oscillatorProcessor;
 }
 
-export type Synth = {
-	audioWorkletNode: AudioWorkletNode;
-	context: AudioContext;
-};
+export class Synth {
+	constructor(private audioWorkletNode: AudioWorkletNode) {}
 
-export async function setupSynth(): Promise<Synth> {
+	postMessage(message: MidiMessage): void {
+		this.audioWorkletNode.port.postMessage(message);
+	}
+}
+
+export async function createSynth(): Promise<Synth> {
 	const context = new AudioContext();
 
 	// The context refuzes to play unless `resume` is called in a user input event handler.
@@ -31,11 +34,5 @@ export async function setupSynth(): Promise<Synth> {
 		customSynthProcessorKey
 	);
 	audioWorkletNode.connect(context.destination);
-	return { audioWorkletNode, context };
-}
-
-// Just a wrapper for typing.
-export function postMessage(synth: Synth, message: MidiMessage): void {
-	// Handle the MIDI message inside the oscilator.
-	synth.audioWorkletNode.port.postMessage(message);
+	return new Synth(audioWorkletNode);
 }

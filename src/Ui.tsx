@@ -1,5 +1,5 @@
 import React from "react";
-import { setupSynth, Synth, postMessage } from "./syth-api";
+import { createSynth, Synth } from "./syth-api";
 
 const middleCMidiNumber = 60;
 let synth: Synth | undefined;
@@ -8,10 +8,10 @@ function makeNoteStartEventHandler(
 ): React.MouseEventHandler<HTMLButtonElement> | undefined {
 	return async () => {
 		if (!synth) {
-			synth = await setupSynth();
+			synth = await createSynth();
 		}
 
-		postMessage(synth, {
+		synth.postMessage({
 			type: "noteon",
 			number: note,
 			value: 0,
@@ -22,10 +22,10 @@ function makeNoteStartEventHandler(
 }
 async function noteStopEventHandler(): Promise<void> {
 	if (!synth) {
-		synth = await setupSynth();
+		synth = await createSynth();
 	}
 
-	postMessage(synth, {
+	synth.postMessage({
 		type: "noteoff",
 		number: 0,
 		value: 0,
