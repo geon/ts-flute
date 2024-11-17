@@ -1,7 +1,7 @@
 import generatorProcessorUrl from "./custom-synth-processor?worker&url";
 import { MidiMessage } from "./midi-message";
 
-class Synth {
+export class Synth {
 	constructor(private audioWorkletNode: AudioWorkletNode) {}
 
 	postMessage(message: MidiMessage): void {
