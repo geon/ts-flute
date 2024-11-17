@@ -38,15 +38,15 @@ function* makeSawToothOscilator(sampleRate: number): SynthGenerator {
 	}
 }
 
+export interface ProcessorOptions {
+	sampleRate: number;
+}
+
 class GeneratorProcessor extends AudioWorkletProcessor {
 	toneOscilator: SynthGenerator;
 	midiMessages: MidiMessage[] = [];
 
-	constructor({
-		processorOptions,
-	}: {
-		processorOptions: { sampleRate: number };
-	}) {
+	constructor({ processorOptions }: { processorOptions: ProcessorOptions }) {
 		super();
 		this.toneOscilator = makeSawToothOscilator(processorOptions.sampleRate);
 		// Prime the generator so it is ready to receive events.

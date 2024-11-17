@@ -1,10 +1,10 @@
+import { ProcessorOptions } from "./custom-synth-processor";
 import generatorProcessorUrl from "./custom-synth-processor?worker&url";
 import { MidiMessage } from "./midi-message";
 
 function makeAudioWorkletNode(context: AudioContext, processorKey: string) {
-	const options: AudioWorkletNodeOptions = {
-		processorOptions: { sampleRate: context.sampleRate },
-	};
+	const processorOptions: ProcessorOptions = { sampleRate: context.sampleRate };
+	const options: AudioWorkletNodeOptions = { processorOptions };
 	const oscillatorProcessor = new AudioWorkletNode(
 		context,
 		processorKey,
