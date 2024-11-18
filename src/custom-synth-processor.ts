@@ -61,14 +61,11 @@ function* makeFlute(sampleRate: number): SynthGenerator {
 
 	let pipe = new PipeSection(1);
 
-	let pressureAtHead = 0;
-	let pressureAtFoot = 0;
-
 	let volume = 0;
 	for (;;) {
 		const noiseFromMouth = 0.1 * volume * (-1 + 2 * Math.random());
 
-		[pressureAtFoot, pressureAtHead] = pipe.read();
+		const [pressureAtFoot, pressureAtHead] = pipe.read();
 		pipe.write([
 			noiseFromMouth + pressureAtHead * dampening,
 			pressureAtFoot * -dampening,
