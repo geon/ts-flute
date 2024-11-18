@@ -54,8 +54,8 @@ class PipeSection {
 }
 
 class Whistle {
-	step(_pressure: number): number {
-		return 0.1 * (-1 + 2 * Math.random());
+	step(volume: number, _pressure: number): number {
+		return volume * 0.1 * (-1 + 2 * Math.random());
 	}
 }
 
@@ -72,7 +72,7 @@ function* makeFlute(sampleRate: number): SynthGenerator {
 	for (;;) {
 		const [pressureAtFoot, pressureAtHead] = pipe.read();
 
-		const pressureFromWhistle = volume * whistle.step(pressureAtHead);
+		const pressureFromWhistle = whistle.step(volume, pressureAtHead);
 
 		pipe.write([
 			pressureFromWhistle + pressureAtHead * dampening,
