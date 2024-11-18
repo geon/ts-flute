@@ -54,7 +54,7 @@ class PipeSection {
 }
 
 class Mouth {
-	step(): number {
+	step(_pressure: number): number {
 		return 0.1 * (-1 + 2 * Math.random());
 	}
 }
@@ -70,9 +70,10 @@ function* makeFlute(sampleRate: number): SynthGenerator {
 
 	let volume = 0;
 	for (;;) {
-		const noiseFromMouth = volume * mouth.step();
-
 		const [pressureAtFoot, pressureAtHead] = pipe.read();
+
+		const noiseFromMouth = volume * mouth.step(pressureAtHead);
+
 		pipe.write([
 			noiseFromMouth + pressureAtHead * dampening,
 			pressureAtFoot * -dampening,
