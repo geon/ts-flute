@@ -53,6 +53,12 @@ class PipeSection {
 	}
 }
 
+class Mouth {
+	step(): number {
+		return 0.1 * (-1 + 2 * Math.random());
+	}
+}
+
 function* makeFlute(sampleRate: number): SynthGenerator {
 	const speedOfSound = 343; // m/s
 	const samplesPerMeter = sampleRate / speedOfSound;
@@ -60,10 +66,11 @@ function* makeFlute(sampleRate: number): SynthGenerator {
 	const dampening = 0.75;
 
 	let pipe = new PipeSection(1);
+	const mouth = new Mouth();
 
 	let volume = 0;
 	for (;;) {
-		const noiseFromMouth = 0.1 * volume * (-1 + 2 * Math.random());
+		const noiseFromMouth = volume * mouth.step();
 
 		const [pressureAtFoot, pressureAtHead] = pipe.read();
 		pipe.write([
