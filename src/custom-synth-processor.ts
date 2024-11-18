@@ -29,14 +29,28 @@ class DelayLine {
 	}
 }
 
+class PipeSection {
+	delayLines: [DelayLine, DelayLine];
+
+	constructor(size: number) {
+		this.delayLines = [new DelayLine(size), new DelayLine(size)];
+	}
+
+	step(input: [number, number]): [number, number] {
+		return [
+			this.delayLines[0].step(input[0]),
+			this.delayLines[1].step(input[1]),
+		];
+	}
+}
+
 function* makeFlute(sampleRate: number): SynthGenerator {
 	const speedOfSound = 343; // m/s
 	const samplesPerMeter = sampleRate / speedOfSound;
 
 	const dampening = 0.75;
 
-	let headToFoot = new DelayLine(1);
-	let footToHead = new DelayLine(1);
+	let pipe = new PipeSection(1);
 
 	let pressureAtHead = 0;
 	let pressureAtFoot = 0;
@@ -45,10 +59,10 @@ function* makeFlute(sampleRate: number): SynthGenerator {
 	for (;;) {
 		const noiseFromMouth = 0.1 * volume * (-1 + 2 * Math.random());
 
-		pressureAtHead = footToHead.step(pressureAtFoot * -dampening);
-		pressureAtFoot = headToFoot.step(
-			noiseFromMouth + pressureAtHead * dampening
-		);
+		[pressureAtFoot, pressureAtHead] = pipe.step([
+			noiseFromMouth + pressureAtHead * dampening,
+			pressureAtFoot * -dampening,
+		]);
 
 		const midiMessage = yield pressureAtFoot;
 		if (midiMessage) {
@@ -56,10 +70,7 @@ function* makeFlute(sampleRate: number): SynthGenerator {
 				case "noteon": {
 					const frequency = frequencyFromMidiNoteNumber(midiMessage.number);
 					const length = speedOfSound / frequency;
-
-					headToFoot = new DelayLine(length * samplesPerMeter);
-					footToHead = new DelayLine(length * samplesPerMeter);
-
+					pipe = new PipeSection(length * samplesPerMeter);
 					volume = 1;
 					break;
 				}
