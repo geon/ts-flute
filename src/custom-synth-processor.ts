@@ -53,7 +53,7 @@ class PipeSection {
 	}
 }
 
-class Mouth {
+class Whistle {
 	step(_pressure: number): number {
 		return 0.1 * (-1 + 2 * Math.random());
 	}
@@ -66,16 +66,16 @@ function* makeFlute(sampleRate: number): SynthGenerator {
 	const dampening = 0.75;
 
 	let pipe = new PipeSection(1);
-	const mouth = new Mouth();
+	const whistle = new Whistle();
 
 	let volume = 0;
 	for (;;) {
 		const [pressureAtFoot, pressureAtHead] = pipe.read();
 
-		const noiseFromMouth = volume * mouth.step(pressureAtHead);
+		const noiseFromWhistle = volume * whistle.step(pressureAtHead);
 
 		pipe.write([
-			noiseFromMouth + pressureAtHead * dampening,
+			noiseFromWhistle + pressureAtHead * dampening,
 			pressureAtFoot * -dampening,
 		]);
 		pipe.step();
