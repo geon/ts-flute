@@ -72,10 +72,10 @@ function* makeFlute(sampleRate: number): SynthGenerator {
 	for (;;) {
 		const [pressureAtFoot, pressureAtHead] = pipe.read();
 
-		const noiseFromWhistle = volume * whistle.step(pressureAtHead);
+		const pressureFromWhistle = volume * whistle.step(pressureAtHead);
 
 		pipe.write([
-			noiseFromWhistle + pressureAtHead * dampening,
+			pressureFromWhistle + pressureAtHead * dampening,
 			pressureAtFoot * -dampening,
 		]);
 		pipe.step();
