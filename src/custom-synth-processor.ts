@@ -22,10 +22,14 @@ class DelayLine {
 		}
 	}
 
-	step(input: number): number {
-		this.samples[this.cursor] = input;
-		this.cursor = (this.cursor + 1) % this.samples.length;
+	read(): number {
 		return this.samples[this.cursor]!;
+	}
+	write(input: number): void {
+		this.samples[this.cursor] = input;
+	}
+	step(): void {
+		this.cursor = (this.cursor + 1) % this.samples.length;
 	}
 }
 
@@ -36,11 +40,19 @@ class PipeSection {
 		this.delayLines = [new DelayLine(size), new DelayLine(size)];
 	}
 
-	step(input: [number, number]): [number, number] {
-		return [
-			this.delayLines[0].step(input[0]),
-			this.delayLines[1].step(input[1]),
-		];
+	step(input: [number, number]): readonly [number, number] {
+		const output = [
+			this.delayLines[0].read(),
+			this.delayLines[1].read(),
+		] as const;
+
+		this.delayLines[0].write(input[0]);
+		this.delayLines[1].write(input[1]);
+
+		this.delayLines[0].step();
+		this.delayLines[1].step();
+
+		return output;
 	}
 }
 
