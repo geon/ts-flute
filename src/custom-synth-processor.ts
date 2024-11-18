@@ -40,19 +40,16 @@ class PipeSection {
 		this.delayLines = [new DelayLine(size), new DelayLine(size)];
 	}
 
-	step(input: [number, number]): readonly [number, number] {
-		const output = [
-			this.delayLines[0].read(),
-			this.delayLines[1].read(),
-		] as const;
-
+	read(): [number, number] {
+		return [this.delayLines[0].read(), this.delayLines[1].read()];
+	}
+	write(input: [number, number]): void {
 		this.delayLines[0].write(input[0]);
 		this.delayLines[1].write(input[1]);
-
+	}
+	step(): void {
 		this.delayLines[0].step();
 		this.delayLines[1].step();
-
-		return output;
 	}
 }
 
@@ -71,10 +68,12 @@ function* makeFlute(sampleRate: number): SynthGenerator {
 	for (;;) {
 		const noiseFromMouth = 0.1 * volume * (-1 + 2 * Math.random());
 
-		[pressureAtFoot, pressureAtHead] = pipe.step([
+		[pressureAtFoot, pressureAtHead] = pipe.read();
+		pipe.write([
 			noiseFromMouth + pressureAtHead * dampening,
 			pressureAtFoot * -dampening,
 		]);
+		pipe.step();
 
 		const midiMessage = yield pressureAtFoot;
 		if (midiMessage) {
