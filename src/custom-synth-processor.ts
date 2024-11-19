@@ -53,9 +53,30 @@ class PipeSection {
 	}
 }
 
+function clampInputToVolume(input: number, volume: number): number {
+	return Math.max(-volume, Math.min(volume, input));
+}
+
 class Whistle {
-	step(volume: number, _pressure: number): number {
-		return volume * 0.1 * (-1 + 2 * Math.random());
+	pressure = 0;
+	pressureDelta = 0;
+
+	step(volume: number, pressureFromPipe: number): number {
+		const naturalOscilationSpeedFactor = 0.03;
+		const dampening = 0.99;
+
+		const noise = 0.01 * (-1 + 2 * Math.random());
+
+		const pressure =
+			this.pressure + this.pressureDelta * naturalOscilationSpeedFactor;
+		const pressureDelta =
+			this.pressureDelta -
+			(this.pressure + pressureFromPipe) * naturalOscilationSpeedFactor;
+
+		this.pressure = clampInputToVolume(pressure + noise, volume);
+		this.pressureDelta = pressureDelta * dampening;
+
+		return this.pressure;
 	}
 }
 
