@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "start": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc && vite build --config vite.config.js",
+    "publish": "npm run build && ./publish.sh",
     "preview": "vite preview"
   },
   "devDependencies": {
