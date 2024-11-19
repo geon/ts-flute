@@ -82,26 +82,24 @@ function clampInputToVolume(input: number, volume: number): number {
 	return Math.max(-volume, Math.min(volume, input));
 }
 
+// https://www.earlevel.com/main/2003/03/02/the-digital-state-variable-filter/
 class Whistle {
-	pressure = 0;
-	pressureDelta = 0;
+	sinZ = 0;
+	cosZ = 0;
 
-	step(volume: number, pressureFromPipe: number): number {
-		const naturalOscilationSpeedFactor = 0.03;
+	step(volume: number, feedback: number): number {
+		const speed = 0.03;
 		const dampening = 0.99;
 
 		const noise = 0.01 * (-1 + 2 * Math.random());
 
-		const pressure =
-			this.pressure + this.pressureDelta * naturalOscilationSpeedFactor;
-		const pressureDelta =
-			this.pressureDelta -
-			(this.pressure + pressureFromPipe) * naturalOscilationSpeedFactor;
+		const sinZ = this.sinZ + this.cosZ * speed;
+		const cosZ = this.cosZ - (this.sinZ + feedback) * speed;
 
-		this.pressure = clampInputToVolume(pressure + noise, volume);
-		this.pressureDelta = pressureDelta * dampening;
+		this.sinZ = clampInputToVolume(sinZ + noise, volume);
+		this.cosZ = cosZ * dampening;
 
-		return this.pressure;
+		return this.sinZ;
 	}
 }
 
