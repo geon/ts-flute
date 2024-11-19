@@ -93,6 +93,10 @@ const sharps = [
 export function Ui(): JSX.Element {
 	return (
 		<div>
+			<p>
+				Source code:{" "}
+				<a href="https://github.com/geon/ts-flute">github.com/geon/ts-flute</a>
+			</p>
 			<div>
 				{sharps.map((sharp) => {
 					if (!sharp) {
