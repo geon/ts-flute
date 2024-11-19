@@ -53,6 +53,31 @@ class PipeSection {
 	}
 }
 
+class Interpolator {
+	private samplesLeftToTarget: number;
+	private current: number;
+	private target: number;
+
+	constructor(private samplerate: number, initial: number) {
+		this.samplesLeftToTarget = 0;
+		this.current = initial;
+		this.target = initial;
+	}
+
+	setTarget(target: number, time: number) {
+		this.target = target;
+		this.samplesLeftToTarget = this.samplerate * time;
+	}
+
+	step(): number {
+		if (this.samplesLeftToTarget) {
+			this.current += (this.target - this.current) / this.samplesLeftToTarget;
+			--this.samplesLeftToTarget;
+		}
+		return this.current;
+	}
+}
+
 function clampInputToVolume(input: number, volume: number): number {
 	return Math.max(-volume, Math.min(volume, input));
 }
@@ -89,11 +114,14 @@ function* makeFlute(sampleRate: number): SynthGenerator {
 	let pipe = new PipeSection(1);
 	const whistle = new Whistle();
 
-	let volume = 0;
+	const volumeInterpolator = new Interpolator(sampleRate * 0.2, 0);
 	for (;;) {
 		const [pressureAtFoot, pressureAtHead] = pipe.read();
 
-		const pressureFromWhistle = whistle.step(volume, pressureAtHead);
+		const pressureFromWhistle = whistle.step(
+			volumeInterpolator.step(),
+			pressureAtHead
+		);
 
 		pipe.write([
 			pressureFromWhistle + pressureAtHead * dampening,
@@ -108,11 +136,11 @@ function* makeFlute(sampleRate: number): SynthGenerator {
 					const frequency = frequencyFromMidiNoteNumber(midiMessage.number);
 					const length = speedOfSound / frequency;
 					pipe = new PipeSection(length * samplesPerMeter);
-					volume = 1;
+					volumeInterpolator.setTarget(1, 0.3);
 					break;
 				}
 				case "noteoff": {
-					volume = 0;
+					volumeInterpolator.setTarget(0, 0.1);
 					break;
 				}
 			}
