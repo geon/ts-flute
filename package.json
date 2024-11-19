@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "start": "vite",
+    "start": "vite --host",
     "build": "tsc && vite build --config vite.config.js",
     "publish": "npm run build && ./publish.sh",
     "preview": "vite preview"
