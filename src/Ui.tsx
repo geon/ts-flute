@@ -101,8 +101,8 @@ export function Ui(): JSX.Element {
 					const { name, midiNumber } = sharp;
 					return (
 						<button
-							onMouseDown={makeNoteStartEventHandler(midiNumber)}
-							onMouseUp={noteStopEventHandler}
+							onPointerDown={makeNoteStartEventHandler(midiNumber)}
+							onPointerUp={noteStopEventHandler}
 						>
 							{name}
 						</button>
@@ -112,8 +112,8 @@ export function Ui(): JSX.Element {
 			<div>
 				{notes.map(({ name, midiNumber }) => (
 					<button
-						onMouseDown={makeNoteStartEventHandler(midiNumber)}
-						onMouseUp={noteStopEventHandler}
+						onPointerDown={makeNoteStartEventHandler(midiNumber)}
+						onPointerUp={noteStopEventHandler}
 					>
 						{name}
 					</button>
