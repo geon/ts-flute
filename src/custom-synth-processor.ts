@@ -83,7 +83,7 @@ function clampInputToVolume(input: number, volume: number): number {
 }
 
 // https://www.earlevel.com/main/2003/03/02/the-digital-state-variable-filter/
-class Whistle {
+class ChamberlinOscillator {
 	sinZ = 0;
 	cosZ = 0;
 
@@ -106,14 +106,14 @@ class Whistle {
 
 class PanFlutePipe {
 	pipe: PipeSection;
-	whistle: Whistle;
+	whistle: ChamberlinOscillator;
 	volumeInterpolator: Interpolator;
 
 	constructor(sampleRate: number, frequency: number) {
 		const samplesPerMeter = sampleRate / speedOfSound;
 		const length = speedOfSound / frequency;
 		this.pipe = new PipeSection(length * samplesPerMeter);
-		this.whistle = new Whistle(220);
+		this.whistle = new ChamberlinOscillator(220);
 		this.volumeInterpolator = new Interpolator(sampleRate, 0);
 	}
 
