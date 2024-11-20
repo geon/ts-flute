@@ -87,12 +87,12 @@ class Whistle {
 	sinZ = 0;
 	cosZ = 0;
 
-	step(volume: number, feedback: number): number {
-		const frequency = 220;
+	constructor(private frequency: number) {}
 
+	step(volume: number, feedback: number): number {
 		// The frequency control coefficient as described in
 		// https://www.earlevel.com/main/2003/03/02/the-digital-state-variable-filter/
-		const f = 2 * Math.PI * (frequency / sampleRate);
+		const f = 2 * Math.PI * (this.frequency / sampleRate);
 
 		const dampening = 0.99;
 
@@ -115,7 +115,7 @@ function* makeFlute(sampleRate: number): SynthGenerator {
 	const dampening = 0.75;
 
 	let pipe = new PipeSection(1);
-	const whistle = new Whistle();
+	const whistle = new Whistle(220);
 
 	const volumeInterpolator = new Interpolator(sampleRate * 0.2, 0);
 	for (;;) {
