@@ -94,15 +94,12 @@ class Whistle {
 		// https://www.earlevel.com/main/2003/03/02/the-digital-state-variable-filter/
 		const f = 2 * Math.PI * (this.frequency / sampleRate);
 
-		const dampening = 0.99;
-
 		const noise = 0.01 * (-1 + 2 * Math.random());
 
 		this.sinZ = this.sinZ + this.cosZ * f;
 		this.cosZ = this.cosZ - this.sinZ * f;
 
 		this.sinZ = clampInputToVolume(this.sinZ + noise + feedback * f, volume);
-		this.cosZ = this.cosZ * dampening;
 
 		return this.sinZ;
 	}
