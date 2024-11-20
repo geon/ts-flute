@@ -144,15 +144,22 @@ class PanFlutePipe {
 const speedOfSound = 343; // m/s
 
 function* makeFlute(sampleRate: number): SynthGenerator {
-	let pipe = new PanFlutePipe(sampleRate, 1);
+	const pipes = new Map<number, PanFlutePipe>();
 
 	for (;;) {
-		const midiMessage = yield pipe.step();
+		const sumPressure = [...pipes.values()]
+			.map((pipe) => pipe.step())
+			.reduce((a, b) => a + b, 0);
+		const midiMessage = yield sumPressure * 0.2;
 		if (midiMessage) {
+			let pipe = pipes.get(midiMessage.number);
+			if (!pipe) {
+				const frequency = frequencyFromMidiNoteNumber(midiMessage.number);
+				pipe = new PanFlutePipe(sampleRate, frequency);
+				pipes.set(midiMessage.number, pipe);
+			}
 			switch (midiMessage.type) {
 				case "noteon": {
-					const frequency = frequencyFromMidiNoteNumber(midiMessage.number);
-					pipe = new PanFlutePipe(sampleRate, frequency);
 					pipe.setVolumeTarget(0.7, 0.06);
 					break;
 				}
