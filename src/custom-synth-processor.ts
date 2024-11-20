@@ -88,9 +88,11 @@ class Whistle {
 	cosZ = 0;
 
 	step(volume: number, feedback: number): number {
-		// The frequency controll coefficient as described in
+		const frequency = 220;
+
+		// The frequency control coefficient as described in
 		// https://www.earlevel.com/main/2003/03/02/the-digital-state-variable-filter/
-		const f = 0.03;
+		const f = 2 * Math.PI * (frequency / sampleRate);
 
 		const dampening = 0.99;
 
