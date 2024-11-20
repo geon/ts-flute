@@ -104,42 +104,60 @@ class Whistle {
 	}
 }
 
-function* makeFlute(sampleRate: number): SynthGenerator {
-	const speedOfSound = 343; // m/s
-	const samplesPerMeter = sampleRate / speedOfSound;
+class PanFlutePipe {
+	pipe: PipeSection;
+	whistle: Whistle;
+	volumeInterpolator: Interpolator;
 
-	const damping = 0.75;
+	constructor(sampleRate: number, frequency: number) {
+		const samplesPerMeter = sampleRate / speedOfSound;
+		const length = speedOfSound / frequency;
+		this.pipe = new PipeSection(length * samplesPerMeter);
+		this.whistle = new Whistle(220);
+		this.volumeInterpolator = new Interpolator(sampleRate, 0);
+	}
 
-	let pipe = new PipeSection(1);
-	const whistle = new Whistle(220);
+	setVolumeTarget(target: number, time: number) {
+		this.volumeInterpolator.setTarget(target, time);
+	}
 
-	const volumeInterpolator = new Interpolator(sampleRate, 0);
-	for (;;) {
-		const [pressureAtFoot, pressureAtHead] = pipe.read();
+	step(): number {
+		const damping = 0.75;
 
-		const pressureFromWhistle = whistle.step(
-			volumeInterpolator.step(),
+		const [pressureAtFoot, pressureAtHead] = this.pipe.read();
+
+		const pressureFromWhistle = this.whistle.step(
+			this.volumeInterpolator.step(),
 			pressureAtHead
 		);
 
-		pipe.write([
+		this.pipe.write([
 			pressureFromWhistle + pressureAtHead * damping,
 			pressureAtFoot * -damping,
 		]);
-		pipe.step();
+		this.pipe.step();
 
-		const midiMessage = yield pressureAtFoot;
+		return pressureAtFoot;
+	}
+}
+
+const speedOfSound = 343; // m/s
+
+function* makeFlute(sampleRate: number): SynthGenerator {
+	let pipe = new PanFlutePipe(sampleRate, 1);
+
+	for (;;) {
+		const midiMessage = yield pipe.step();
 		if (midiMessage) {
 			switch (midiMessage.type) {
 				case "noteon": {
 					const frequency = frequencyFromMidiNoteNumber(midiMessage.number);
-					const length = speedOfSound / frequency;
-					pipe = new PipeSection(length * samplesPerMeter);
-					volumeInterpolator.setTarget(0.7, 0.06);
+					pipe = new PanFlutePipe(sampleRate, frequency);
+					pipe.setVolumeTarget(0.7, 0.06);
 					break;
 				}
 				case "noteoff": {
-					volumeInterpolator.setTarget(0, 0.02);
+					pipe.setVolumeTarget(0, 0.02);
 					break;
 				}
 			}
