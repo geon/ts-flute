@@ -108,7 +108,7 @@ function* makeFlute(sampleRate: number): SynthGenerator {
 	const speedOfSound = 343; // m/s
 	const samplesPerMeter = sampleRate / speedOfSound;
 
-	const dampening = 0.75;
+	const damping = 0.75;
 
 	let pipe = new PipeSection(1);
 	const whistle = new Whistle(220);
@@ -123,8 +123,8 @@ function* makeFlute(sampleRate: number): SynthGenerator {
 		);
 
 		pipe.write([
-			pressureFromWhistle + pressureAtHead * dampening,
-			pressureAtFoot * -dampening,
+			pressureFromWhistle + pressureAtHead * damping,
+			pressureAtFoot * -damping,
 		]);
 		pipe.step();
 
