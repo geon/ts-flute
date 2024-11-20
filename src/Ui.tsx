@@ -98,13 +98,14 @@ export function Ui(): JSX.Element {
 				<a href="https://github.com/geon/ts-flute">github.com/geon/ts-flute</a>
 			</p>
 			<div>
-				{sharps.map((sharp) => {
+				{sharps.map((sharp, index) => {
 					if (!sharp) {
-						return <span />;
+						return <span key={"_" + index} />;
 					}
 					const { name, midiNumber } = sharp;
 					return (
 						<button
+							key={midiNumber}
 							onPointerDown={makeNoteStartEventHandler(midiNumber)}
 							onPointerUp={noteStopEventHandler}
 						>
@@ -116,6 +117,7 @@ export function Ui(): JSX.Element {
 			<div>
 				{notes.map(({ name, midiNumber }) => (
 					<button
+						key={midiNumber}
 						onPointerDown={makeNoteStartEventHandler(midiNumber)}
 						onPointerUp={noteStopEventHandler}
 					>
