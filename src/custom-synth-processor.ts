@@ -2,10 +2,7 @@ import { SynthGenerator, createGeneratorProcessor } from "./synth-api";
 import { customSynthProcessorKey } from "./processor-keys";
 import { ChamberlinOscillator } from "./ChamberlinOscillator";
 import { Interpolator } from "./Interpolator";
-
-function frequencyFromMidiNoteNumber(noteNumber: number): number {
-	return 440 * Math.pow(2, (noteNumber - 69) / 12);
-}
+import { frequencyFromMidiNoteNumber } from "./midi-message";
 
 class DelayLine {
 	cursor: number;

@@ -22,3 +22,7 @@ export interface MidiMessage {
 	readonly channel: number;
 	readonly timestamp: number;
 }
+
+export function frequencyFromMidiNoteNumber(noteNumber: number): number {
+	return 440 * Math.pow(2, (noteNumber - 69) / 12);
+}
