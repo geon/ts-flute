@@ -21,18 +21,22 @@ function makeNoteStartEventHandler(
 		});
 	};
 }
-async function noteStopEventHandler(): Promise<void> {
-	if (!synth) {
-		synth = await createSynth(customSynthProcessorKey);
-	}
+function makeNoteStopEventHandler(
+	note: number
+): React.MouseEventHandler<HTMLButtonElement> | undefined {
+	return async () => {
+		if (!synth) {
+			synth = await createSynth(customSynthProcessorKey);
+		}
 
-	synth.postMessage({
-		type: "noteoff",
-		number: 0,
-		value: 0,
-		channel: 0,
-		timestamp: 0,
-	});
+		synth.postMessage({
+			type: "noteoff",
+			number: note,
+			value: 0,
+			channel: 0,
+			timestamp: 0,
+		});
+	};
 }
 
 const notes = [
@@ -107,7 +111,7 @@ export function Ui(): JSX.Element {
 						<button
 							key={midiNumber}
 							onPointerDown={makeNoteStartEventHandler(midiNumber)}
-							onPointerUp={noteStopEventHandler}
+							onPointerUp={makeNoteStopEventHandler(midiNumber)}
 						>
 							{name}
 						</button>
@@ -119,7 +123,7 @@ export function Ui(): JSX.Element {
 					<button
 						key={midiNumber}
 						onPointerDown={makeNoteStartEventHandler(midiNumber)}
-						onPointerUp={noteStopEventHandler}
+						onPointerUp={makeNoteStopEventHandler(midiNumber)}
 					>
 						{name}
 					</button>
