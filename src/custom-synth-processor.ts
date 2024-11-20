@@ -113,7 +113,7 @@ function* makeFlute(sampleRate: number): SynthGenerator {
 	let pipe = new PipeSection(1);
 	const whistle = new Whistle(220);
 
-	const volumeInterpolator = new Interpolator(sampleRate * 0.2, 0);
+	const volumeInterpolator = new Interpolator(sampleRate, 0);
 	for (;;) {
 		const [pressureAtFoot, pressureAtHead] = pipe.read();
 
@@ -135,11 +135,11 @@ function* makeFlute(sampleRate: number): SynthGenerator {
 					const frequency = frequencyFromMidiNoteNumber(midiMessage.number);
 					const length = speedOfSound / frequency;
 					pipe = new PipeSection(length * samplesPerMeter);
-					volumeInterpolator.setTarget(0.7, 0.3);
+					volumeInterpolator.setTarget(0.7, 0.06);
 					break;
 				}
 				case "noteoff": {
-					volumeInterpolator.setTarget(0, 0.1);
+					volumeInterpolator.setTarget(0, 0.02);
 					break;
 				}
 			}
