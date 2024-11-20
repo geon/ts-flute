@@ -1,5 +1,6 @@
 import { SynthGenerator, createGeneratorProcessor } from "./synth-api";
 import { customSynthProcessorKey } from "./processor-keys";
+import { ChamberlinOscillator } from "./ChamberlinOscillator";
 
 function frequencyFromMidiNoteNumber(noteNumber: number): number {
 	return 440 * Math.pow(2, (noteNumber - 69) / 12);
@@ -75,32 +76,6 @@ class Interpolator {
 			--this.samplesLeftToTarget;
 		}
 		return this.current;
-	}
-}
-
-function clampInputToVolume(input: number, volume: number): number {
-	return Math.max(-volume, Math.min(volume, input));
-}
-
-// https://www.earlevel.com/main/2003/03/02/the-digital-state-variable-filter/
-class ChamberlinOscillator {
-	sinZ = 0;
-	cosZ = 0;
-
-	constructor(private frequency: number) {}
-
-	step(volume: number, feedback: number): number {
-		// The frequency control coefficient as described in
-		// https://www.earlevel.com/main/2003/03/02/the-digital-state-variable-filter/
-		const f = 2 * Math.PI * (this.frequency / sampleRate);
-
-		this.sinZ = this.sinZ + this.cosZ * f;
-		this.cosZ = this.cosZ - this.sinZ * f;
-
-		const noise = 0.0001 * (-1 + 2 * Math.random());
-		this.sinZ = clampInputToVolume(this.sinZ + noise + feedback * f, volume);
-
-		return this.sinZ;
 	}
 }
 
