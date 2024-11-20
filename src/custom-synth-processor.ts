@@ -136,7 +136,7 @@ function* makeFlute(sampleRate: number): SynthGenerator {
 					const frequency = frequencyFromMidiNoteNumber(midiMessage.number);
 					const length = speedOfSound / frequency;
 					pipe = new PipeSection(length * samplesPerMeter);
-					volumeInterpolator.setTarget(1, 0.3);
+					volumeInterpolator.setTarget(0.7, 0.3);
 					break;
 				}
 				case "noteoff": {
