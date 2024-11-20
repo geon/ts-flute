@@ -1,6 +1,6 @@
 import React from "react";
 import { createSynth, Synth } from "./synth-api";
-import * as customSynth from "./synths/custom";
+import * as panFluteSynth from "./synths/pan-flute";
 import { Claviature } from "./Claviature";
 
 let synth: Synth | undefined;
@@ -10,8 +10,8 @@ function makeNoteStartEventHandler(
 	return async () => {
 		if (!synth) {
 			synth = await createSynth(
-				customSynth.processorKey,
-				customSynth.processorUrl
+				panFluteSynth.processorKey,
+				panFluteSynth.processorUrl
 			);
 		}
 
@@ -30,8 +30,8 @@ function makeNoteStopEventHandler(
 	return async () => {
 		if (!synth) {
 			synth = await createSynth(
-				customSynth.processorKey,
-				customSynth.processorUrl
+				panFluteSynth.processorKey,
+				panFluteSynth.processorUrl
 			);
 		}
 
