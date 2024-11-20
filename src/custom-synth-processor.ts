@@ -98,11 +98,11 @@ class Whistle {
 
 		const noise = 0.01 * (-1 + 2 * Math.random());
 
-		const sinZ = this.sinZ + this.cosZ * f;
-		const cosZ = this.cosZ - (this.sinZ + feedback) * f;
+		this.sinZ = this.sinZ + this.cosZ * f;
+		this.cosZ = this.cosZ - (this.sinZ + feedback) * f;
 
-		this.sinZ = clampInputToVolume(sinZ + noise, volume);
-		this.cosZ = cosZ * dampening;
+		this.sinZ = clampInputToVolume(this.sinZ + noise, volume);
+		this.cosZ = this.cosZ * dampening;
 
 		return this.sinZ;
 	}
