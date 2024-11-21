@@ -3,6 +3,7 @@ import { createSynth, Synth } from "./synth-api";
 import { Claviature } from "./Claviature";
 import { synths } from "./synths";
 import { GithubRibbon } from "./github-ribbon";
+import { Select } from "./Select";
 
 const synthCache = new Map<string, Synth>();
 async function getSynth(synthIndex: number): Promise<Synth> {
@@ -58,16 +59,11 @@ export function Ui(): JSX.Element {
 				text="Source on Github"
 				href="https://github.com/geon/ts-flute"
 			/>
-			<select
-				value={synthIndex}
+			<Select
+				value={synthIndex.toString()}
 				onChange={(event) => setSynthIndex(event.currentTarget.selectedIndex)}
-			>
-				{synths.map((synth, index) => (
-					<option key={index} value={index}>
-						{synth.name}
-					</option>
-				))}
-			</select>
+				options={synths.map((x) => x.name)}
+			/>
 			<Claviature
 				makeNoteStartEventHandler={makeNoteStartEventHandler(synthIndex)}
 				makeNoteStopEventHandler={makeNoteStopEventHandler(synthIndex)}
