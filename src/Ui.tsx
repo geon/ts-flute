@@ -39,6 +39,21 @@ function makeNoteStopEventHandler(
 	};
 }
 
+export function Ui(): JSX.Element {
+	return (
+		<div>
+			<p>
+				Source code:{" "}
+				<a href="https://github.com/geon/ts-flute">github.com/geon/ts-flute</a>
+			</p>
+			<Claviature
+				makeNoteStartEventHandler={makeNoteStartEventHandler}
+				makeNoteStopEventHandler={makeNoteStopEventHandler}
+			/>
+		</div>
+	);
+}
+
 const notes = [
 	{
 		name: "C",
@@ -94,13 +109,16 @@ const sharps = [
 	undefined,
 ];
 
-export function Ui(): JSX.Element {
+export function Claviature(props: {
+	readonly makeNoteStartEventHandler: (
+		midiNumber: number
+	) => React.MouseEventHandler<HTMLButtonElement>;
+	readonly makeNoteStopEventHandler: (
+		midiNumber: number
+	) => React.MouseEventHandler<HTMLButtonElement>;
+}): JSX.Element {
 	return (
 		<div>
-			<p>
-				Source code:{" "}
-				<a href="https://github.com/geon/ts-flute">github.com/geon/ts-flute</a>
-			</p>
 			<div>
 				{sharps.map((sharp, index) => {
 					if (!sharp) {
@@ -110,8 +128,8 @@ export function Ui(): JSX.Element {
 					return (
 						<button
 							key={midiNumber}
-							onPointerDown={makeNoteStartEventHandler(midiNumber)}
-							onPointerUp={makeNoteStopEventHandler(midiNumber)}
+							onPointerDown={props.makeNoteStartEventHandler(midiNumber)}
+							onPointerUp={props.makeNoteStopEventHandler(midiNumber)}
 						>
 							{name}
 						</button>
@@ -122,8 +140,8 @@ export function Ui(): JSX.Element {
 				{notes.map(({ name, midiNumber }) => (
 					<button
 						key={midiNumber}
-						onPointerDown={makeNoteStartEventHandler(midiNumber)}
-						onPointerUp={makeNoteStopEventHandler(midiNumber)}
+						onPointerDown={props.makeNoteStartEventHandler(midiNumber)}
+						onPointerUp={props.makeNoteStopEventHandler(midiNumber)}
 					>
 						{name}
 					</button>
