@@ -5,18 +5,21 @@ import * as squareWaveSynth from "./synths/square-wave";
 import { Claviature } from "./Claviature";
 
 let synth: Synth | undefined;
+async function getSynth(): Promise<Synth> {
+	if (!synth) {
+		synth = await createSynth(
+			squareWaveSynth.processorKey,
+			squareWaveSynth.workerUrl
+		);
+	}
+	return synth;
+}
+
 function makeNoteStartEventHandler(
 	note: number
 ): React.MouseEventHandler<HTMLButtonElement> {
 	return async () => {
-		if (!synth) {
-			synth = await createSynth(
-				squareWaveSynth.processorKey,
-				squareWaveSynth.workerUrl
-			);
-		}
-
-		synth.postMessage({
+		(await getSynth()).postMessage({
 			type: "noteon",
 			number: note,
 			value: 0,
@@ -29,14 +32,7 @@ function makeNoteStopEventHandler(
 	note: number
 ): React.MouseEventHandler<HTMLButtonElement> {
 	return async () => {
-		if (!synth) {
-			synth = await createSynth(
-				squareWaveSynth.processorKey,
-				squareWaveSynth.workerUrl
-			);
-		}
-
-		synth.postMessage({
+		(await getSynth()).postMessage({
 			type: "noteoff",
 			number: note,
 			value: 0,
