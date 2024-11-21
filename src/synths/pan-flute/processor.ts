@@ -1,7 +1,7 @@
 import { SynthGenerator, createGeneratorProcessor } from "../../synth-api";
 import { ChamberlinOscillator } from "../../ChamberlinOscillator";
 import { Interpolator } from "../../Interpolator";
-import { frequencyFromMidiNoteNumber } from "../../midi-message";
+import { frequencyFromMidiNoteNumber } from "../../utils";
 import { PipeSection } from "../../PipeSection";
 
 export const name = "Pan Flute";

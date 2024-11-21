@@ -1,5 +1,5 @@
 import { SynthGenerator, createGeneratorProcessor } from "../../synth-api";
-import { frequencyFromMidiNoteNumber } from "../../midi-message";
+import { frequencyFromMidiNoteNumber } from "../../utils";
 
 export const name = "Square Wave";
 export const processorKey = "square-wave";
