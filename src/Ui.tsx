@@ -6,7 +6,7 @@ const middleCMidiNumber = 60;
 let synth: Synth | undefined;
 function makeNoteStartEventHandler(
 	note: number
-): React.MouseEventHandler<HTMLButtonElement> | undefined {
+): React.MouseEventHandler<HTMLButtonElement> {
 	return async () => {
 		if (!synth) {
 			synth = await createSynth(customSynthProcessorKey);
@@ -23,7 +23,7 @@ function makeNoteStartEventHandler(
 }
 function makeNoteStopEventHandler(
 	note: number
-): React.MouseEventHandler<HTMLButtonElement> | undefined {
+): React.MouseEventHandler<HTMLButtonElement> {
 	return async () => {
 		if (!synth) {
 			synth = await createSynth(customSynthProcessorKey);
