@@ -4,6 +4,7 @@ import { Claviature } from "./Claviature";
 import { synths } from "./synths";
 import { GithubRibbon } from "./github-ribbon";
 import { Select } from "./Select";
+import { makeMidiMessageFromMidiArray } from "./midi-message";
 
 const synthCache = new Map<string, Synth>();
 async function getSynth(synthIndex: number): Promise<Synth> {
@@ -50,6 +51,24 @@ function makeNoteStopEventHandler(
 	};
 }
 
+async function setMidiInEnabled(
+	enabled: boolean,
+	synthIndex: number
+): Promise<void> {
+	const midiAccess = await navigator.requestMIDIAccess();
+	midiAccess.inputs.forEach((entry) => {
+		entry.onmidimessage = !enabled
+			? () => undefined
+			: async (event) => {
+					const message = makeMidiMessageFromMidiArray(
+						event.data,
+						event.timeStamp
+					);
+					(await getSynth(synthIndex)).postMessage(message);
+			  };
+	});
+}
+
 export function Ui(): JSX.Element {
 	const [synthIndex, setSynthIndex] = useState(0);
 
@@ -59,6 +78,15 @@ export function Ui(): JSX.Element {
 				text="Source on Github"
 				href="https://github.com/geon/ts-flute"
 			/>
+			<label>
+				<input
+					type="checkbox"
+					onChange={(event) =>
+						setMidiInEnabled(event.currentTarget.checked, synthIndex)
+					}
+				/>
+				Enable MIDI in
+			</label>
 			<Select
 				value={synthIndex.toString()}
 				onChange={(event) => setSynthIndex(event.currentTarget.selectedIndex)}
