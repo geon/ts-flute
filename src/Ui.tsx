@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { createSynth, Synth } from "./synth-api";
 import { Claviature } from "./Claviature";
 import { synths } from "./synths";
+import { GithubRibbon } from "./github-ribbon";
 
 const synthCache = new Map<string, Synth>();
 async function getSynth(synthIndex: number): Promise<Synth> {
@@ -53,10 +54,10 @@ export function Ui(): JSX.Element {
 
 	return (
 		<div>
-			<p>
-				Source code:{" "}
-				<a href="https://github.com/geon/ts-flute">github.com/geon/ts-flute</a>
-			</p>
+			<GithubRibbon
+				text="Source on Github"
+				href="https://github.com/geon/ts-flute"
+			/>
 			<select
 				value={synthIndex}
 				onChange={(event) => setSynthIndex(event.currentTarget.selectedIndex)}
