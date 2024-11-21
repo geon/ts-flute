@@ -12,7 +12,7 @@ function makeNoteStartEventHandler(
 		if (!synth) {
 			synth = await createSynth(
 				squareWaveSynth.processorKey,
-				squareWaveSynth.processorUrl
+				squareWaveSynth.workerUrl
 			);
 		}
 
@@ -32,7 +32,7 @@ function makeNoteStopEventHandler(
 		if (!synth) {
 			synth = await createSynth(
 				squareWaveSynth.processorKey,
-				squareWaveSynth.processorUrl
+				squareWaveSynth.workerUrl
 			);
 		}
 
