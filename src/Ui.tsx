@@ -24,51 +24,6 @@ async function getSynth(synthIndex: number): Promise<Synth> {
 	return synth;
 }
 
-function makeNoteStartEventHandler(
-	synthIndex: number
-): (note: number) => React.MouseEventHandler<HTMLButtonElement> {
-	return (note: number) => async () => {
-		(await getSynth(synthIndex)).postMessage({
-			type: "noteon",
-			number: note,
-			value: 0,
-			channel: 0,
-			timestamp: 0,
-		});
-	};
-}
-function makeNoteStopEventHandler(
-	synthIndex: number
-): (note: number) => React.MouseEventHandler<HTMLButtonElement> {
-	return (note: number) => async () => {
-		(await getSynth(synthIndex)).postMessage({
-			type: "noteoff",
-			number: note,
-			value: 0,
-			channel: 0,
-			timestamp: 0,
-		});
-	};
-}
-
-async function setMidiInEnabled(
-	enabled: boolean,
-	synthIndex: number
-): Promise<void> {
-	const midiAccess = await navigator.requestMIDIAccess();
-	midiAccess.inputs.forEach((entry) => {
-		entry.onmidimessage = !enabled
-			? () => undefined
-			: async (event) => {
-					const message = makeMidiMessageFromMidiArray(
-						event.data,
-						event.timeStamp
-					);
-					(await getSynth(synthIndex)).postMessage(message);
-			  };
-	});
-}
-
 export function Ui(): JSX.Element {
 	const [synthIndex, setSynthIndex] = useState(0);
 
@@ -81,9 +36,21 @@ export function Ui(): JSX.Element {
 			<label>
 				<input
 					type="checkbox"
-					onChange={(event) =>
-						setMidiInEnabled(event.currentTarget.checked, synthIndex)
-					}
+					onChange={async (event) => {
+						const enabled = event.currentTarget.checked;
+						const midiAccess = await navigator.requestMIDIAccess();
+						midiAccess.inputs.forEach((entry) => {
+							entry.onmidimessage = !enabled
+								? () => undefined
+								: async (event) => {
+										const message = makeMidiMessageFromMidiArray(
+											event.data,
+											event.timeStamp
+										);
+										(await getSynth(synthIndex)).postMessage(message);
+								  };
+						});
+					}}
 				/>
 				Enable MIDI in
 			</label>
@@ -93,8 +60,24 @@ export function Ui(): JSX.Element {
 				options={synths.map((x) => x.name)}
 			/>
 			<Claviature
-				makeNoteStartEventHandler={makeNoteStartEventHandler(synthIndex)}
-				makeNoteStopEventHandler={makeNoteStopEventHandler(synthIndex)}
+				makeNoteStartEventHandler={(note: number) => async () => {
+					(await getSynth(synthIndex)).postMessage({
+						type: "noteon",
+						number: note,
+						value: 0,
+						channel: 0,
+						timestamp: 0,
+					});
+				}}
+				makeNoteStopEventHandler={(note: number) => async () => {
+					(await getSynth(synthIndex)).postMessage({
+						type: "noteoff",
+						number: note,
+						value: 0,
+						channel: 0,
+						timestamp: 0,
+					});
+				}}
 			/>
 		</div>
 	);
