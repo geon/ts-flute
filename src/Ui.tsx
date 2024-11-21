@@ -1,6 +1,6 @@
 import React from "react";
 import { createSynth, Synth } from "./synth-api";
-import { customSynthProcessorKey } from "./processor-keys";
+import * as customSynth from "./synths/custom";
 import { Claviature } from "./Claviature";
 
 let synth: Synth | undefined;
@@ -9,7 +9,10 @@ function makeNoteStartEventHandler(
 ): React.MouseEventHandler<HTMLButtonElement> {
 	return async () => {
 		if (!synth) {
-			synth = await createSynth(customSynthProcessorKey);
+			synth = await createSynth(
+				customSynth.processorKey,
+				customSynth.processorUrl
+			);
 		}
 
 		synth.postMessage({
@@ -26,7 +29,10 @@ function makeNoteStopEventHandler(
 ): React.MouseEventHandler<HTMLButtonElement> {
 	return async () => {
 		if (!synth) {
-			synth = await createSynth(customSynthProcessorKey);
+			synth = await createSynth(
+				customSynth.processorKey,
+				customSynth.processorUrl
+			);
 		}
 
 		synth.postMessage({

@@ -1,9 +1,10 @@
-import { SynthGenerator, createGeneratorProcessor } from "./synth-api";
-import { customSynthProcessorKey } from "./processor-keys";
-import { ChamberlinOscillator } from "./ChamberlinOscillator";
-import { Interpolator } from "./Interpolator";
-import { frequencyFromMidiNoteNumber } from "./midi-message";
-import { PipeSection } from "./PipeSection";
+import { SynthGenerator, createGeneratorProcessor } from "../../synth-api";
+import { ChamberlinOscillator } from "../../ChamberlinOscillator";
+import { Interpolator } from "../../Interpolator";
+import { frequencyFromMidiNoteNumber } from "../../midi-message";
+import { PipeSection } from "../../PipeSection";
+
+export const processorKey = "custom-synth-processor";
 
 class PanFlutePipe {
 	pipe: PipeSection;
@@ -73,4 +74,6 @@ function* makeFlute(sampleRate: number): SynthGenerator {
 	}
 }
 
-createGeneratorProcessor(customSynthProcessorKey, makeFlute);
+export function register() {
+	createGeneratorProcessor(processorKey, makeFlute);
+}

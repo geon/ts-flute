@@ -1,4 +1,3 @@
-import generatorProcessorUrl from "./custom-synth-processor?worker&url";
 import { MidiMessage } from "./midi-message";
 
 export class Synth {
@@ -9,9 +8,12 @@ export class Synth {
 	}
 }
 
-export async function createSynth(processorKey: string): Promise<Synth> {
+export async function createSynth(
+	processorKey: string,
+	processorUrl: string
+): Promise<Synth> {
 	const context = new AudioContext();
-	await context.audioWorklet.addModule(generatorProcessorUrl);
+	await context.audioWorklet.addModule(processorUrl);
 	const processorOptions: ProcessorOptions = { sampleRate: context.sampleRate };
 	const options: AudioWorkletNodeOptions = { processorOptions };
 	const audioWorkletNode = new AudioWorkletNode(context, processorKey, options);
