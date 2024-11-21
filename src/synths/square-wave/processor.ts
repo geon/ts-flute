@@ -1,6 +1,7 @@
 import { SynthGenerator, createGeneratorProcessor } from "../../synth-api";
 import { frequencyFromMidiNoteNumber } from "../../midi-message";
 
+export const name = "Square Wave";
 export const processorKey = "square-wave";
 
 function* makeSquareWave(samplesPerHalfPeriod: number): SynthGenerator {

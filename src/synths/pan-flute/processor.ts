@@ -4,6 +4,7 @@ import { Interpolator } from "../../Interpolator";
 import { frequencyFromMidiNoteNumber } from "../../midi-message";
 import { PipeSection } from "../../PipeSection";
 
+export const name = "Pan Flute";
 export const processorKey = "pan-flute";
 
 class PanFlutePipe {

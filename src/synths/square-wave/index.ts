@@ -1,2 +1,2 @@
 export * from "./worker-url";
-export { processorKey } from "./processor";
+export { name, processorKey } from "./processor";

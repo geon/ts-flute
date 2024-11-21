@@ -1,25 +1,31 @@
-import React from "react";
+import React, { useState } from "react";
 import { createSynth, Synth } from "./synth-api";
-// import * as panFluteSynth from "./synths/pan-flute";
-import * as squareWaveSynth from "./synths/square-wave";
 import { Claviature } from "./Claviature";
+import { synths } from "./synths";
 
-let synth: Synth | undefined;
-async function getSynth(): Promise<Synth> {
+const synthCache = new Map<string, Synth>();
+async function getSynth(synthIndex: number): Promise<Synth> {
+	const selectedSynth = synths[synthIndex];
+	if (!selectedSynth) {
+		throw new Error("Not a valid synth selection.");
+	}
+
+	let synth = synthCache.get(selectedSynth.workerUrl);
 	if (!synth) {
 		synth = await createSynth(
-			squareWaveSynth.processorKey,
-			squareWaveSynth.workerUrl
+			selectedSynth.processorKey,
+			selectedSynth.workerUrl
 		);
+		synthCache.set(selectedSynth.workerUrl, synth);
 	}
 	return synth;
 }
 
 function makeNoteStartEventHandler(
-	note: number
-): React.MouseEventHandler<HTMLButtonElement> {
-	return async () => {
-		(await getSynth()).postMessage({
+	synthIndex: number
+): (note: number) => React.MouseEventHandler<HTMLButtonElement> {
+	return (note: number) => async () => {
+		(await getSynth(synthIndex)).postMessage({
 			type: "noteon",
 			number: note,
 			value: 0,
@@ -29,10 +35,10 @@ function makeNoteStartEventHandler(
 	};
 }
 function makeNoteStopEventHandler(
-	note: number
-): React.MouseEventHandler<HTMLButtonElement> {
-	return async () => {
-		(await getSynth()).postMessage({
+	synthIndex: number
+): (note: number) => React.MouseEventHandler<HTMLButtonElement> {
+	return (note: number) => async () => {
+		(await getSynth(synthIndex)).postMessage({
 			type: "noteoff",
 			number: note,
 			value: 0,
@@ -43,15 +49,27 @@ function makeNoteStopEventHandler(
 }
 
 export function Ui(): JSX.Element {
+	const [synthIndex, setSynthIndex] = useState(0);
+
 	return (
 		<div>
 			<p>
 				Source code:{" "}
 				<a href="https://github.com/geon/ts-flute">github.com/geon/ts-flute</a>
 			</p>
+			<select
+				value={synthIndex}
+				onChange={(event) => setSynthIndex(event.currentTarget.selectedIndex)}
+			>
+				{synths.map((synth, index) => (
+					<option key={index} value={index}>
+						{synth.name}
+					</option>
+				))}
+			</select>
 			<Claviature
-				makeNoteStartEventHandler={makeNoteStartEventHandler}
-				makeNoteStopEventHandler={makeNoteStopEventHandler}
+				makeNoteStartEventHandler={makeNoteStartEventHandler(synthIndex)}
+				makeNoteStopEventHandler={makeNoteStopEventHandler(synthIndex)}
 			/>
 		</div>
 	);
