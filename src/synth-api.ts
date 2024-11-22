@@ -1,4 +1,23 @@
 import { MidiMessage } from "./midi-message";
+import { synths } from "./synths";
+
+const synthCache = new Map<string, Synth>();
+export async function getSynth(synthIndex: number): Promise<Synth> {
+	const selectedSynth = synths[synthIndex];
+	if (!selectedSynth) {
+		throw new Error("Not a valid synth selection.");
+	}
+
+	let synth = synthCache.get(selectedSynth.workerUrl);
+	if (!synth) {
+		synth = await createSynth(
+			selectedSynth.processorKey,
+			selectedSynth.workerUrl
+		);
+		synthCache.set(selectedSynth.workerUrl, synth);
+	}
+	return synth;
+}
 
 export class Synth {
 	constructor(private audioWorkletNode: AudioWorkletNode) {}
