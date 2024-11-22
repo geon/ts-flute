@@ -15,7 +15,7 @@ class PanFlutePipe {
 	constructor(sampleRate: number, frequency: number) {
 		const numSamples = getNumSamplesForPipe(sampleRate, frequency);
 		this.pipe = new PipeSection(numSamples);
-		this.whistle = new ChamberlinOscillator(220);
+		this.whistle = new ChamberlinOscillator(frequency);
 		this.volumeInterpolator = new Interpolator(sampleRate, 0);
 	}
 
