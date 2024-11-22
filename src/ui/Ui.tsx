@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { createSynth, Synth } from "./synth-api";
+import { createSynth, Synth } from "../synth-api";
 import { Claviature } from "./Claviature";
-import { synths } from "./synths";
+import { synths } from "../synths";
 import { GithubRibbon } from "./github-ribbon";
 import { Select } from "./Select";
-import { makeMidiMessageFromMidiArray } from "./midi-message";
+import { makeMidiMessageFromMidiArray } from "../midi-message";
 
 const synthCache = new Map<string, Synth>();
 async function getSynth(synthIndex: number): Promise<Synth> {
