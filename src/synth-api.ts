@@ -3,18 +3,18 @@ import { synthImplementations } from "./synths";
 
 const synthCache = new Map<string, Synth>();
 export async function getSynth(synthIndex: number): Promise<Synth> {
-	const selectedSynth = synthImplementations[synthIndex];
-	if (!selectedSynth) {
+	const synthImplementation = synthImplementations[synthIndex];
+	if (!synthImplementation) {
 		throw new Error("Not a valid synth selection.");
 	}
 
-	let synth = synthCache.get(selectedSynth.workerUrl);
+	let synth = synthCache.get(synthImplementation.workerUrl);
 	if (!synth) {
 		synth = await Synth.create(
-			selectedSynth.processorKey,
-			selectedSynth.workerUrl
+			synthImplementation.processorKey,
+			synthImplementation.workerUrl
 		);
-		synthCache.set(selectedSynth.workerUrl, synth);
+		synthCache.set(synthImplementation.workerUrl, synth);
 	}
 	return synth;
 }
