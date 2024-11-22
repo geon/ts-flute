@@ -15,7 +15,8 @@ class PanFlutePipe {
 	constructor(sampleRate: number, frequency: number) {
 		const samplesPerMeter = sampleRate / speedOfSound;
 		const length = speedOfSound / frequency;
-		this.pipe = new PipeSection(length * samplesPerMeter);
+		const numSamples = length * samplesPerMeter;
+		this.pipe = new PipeSection(numSamples);
 		this.whistle = new ChamberlinOscillator(220);
 		this.volumeInterpolator = new Interpolator(sampleRate, 0);
 	}
