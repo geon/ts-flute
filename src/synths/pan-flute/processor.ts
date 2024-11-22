@@ -35,7 +35,7 @@ class PanFlutePipe {
 
 		this.pipe.write([
 			pressureFromWhistle + pressureAtHead * damping,
-			pressureAtFoot * -damping,
+			pressureAtFoot * damping,
 		]);
 		this.pipe.step();
 
