@@ -56,7 +56,7 @@ export function Root(): JSX.Element {
 			</label>
 			<Select
 				value={synthIndex.toString()}
-				onChange={(event) => setSynthIndex(event.currentTarget.selectedIndex)}
+				onChange={setSynthIndex}
 				options={synths.map((x) => x.name)}
 			/>
 			<Claviature
