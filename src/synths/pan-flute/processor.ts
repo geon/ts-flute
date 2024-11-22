@@ -1,7 +1,7 @@
 import { SynthGenerator, createGeneratorProcessor } from "../../Synth";
 import { ChamberlinOscillator } from "../../ChamberlinOscillator";
 import { Interpolator } from "../../Interpolator";
-import { frequencyFromMidiNoteNumber } from "../../utils";
+import { frequencyFromMidiNoteNumber, getNumSamplesForPipe } from "../../utils";
 import { PipeSection } from "../../PipeSection";
 
 export const name = "Pan Flute";
@@ -13,9 +13,7 @@ class PanFlutePipe {
 	volumeInterpolator: Interpolator;
 
 	constructor(sampleRate: number, frequency: number) {
-		const samplesPerMeter = sampleRate / speedOfSound;
-		const length = speedOfSound / frequency;
-		const numSamples = length * samplesPerMeter;
+		const numSamples = getNumSamplesForPipe(sampleRate, frequency);
 		this.pipe = new PipeSection(numSamples);
 		this.whistle = new ChamberlinOscillator(220);
 		this.volumeInterpolator = new Interpolator(sampleRate, 0);
@@ -44,8 +42,6 @@ class PanFlutePipe {
 		return pressureAtFoot;
 	}
 }
-
-const speedOfSound = 343; // m/s
 
 function* makeFlute(sampleRate: number): SynthGenerator {
 	const pipes = new Map<number, PanFlutePipe>();
