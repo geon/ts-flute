@@ -1,7 +1,7 @@
 import React from "react";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { Ui } from "./ui/Ui.tsx";
+import { Root } from "./ui/Root.tsx";
 import { createGlobalStyle } from "styled-components";
 import { Reset } from "styled-reset";
 
@@ -14,6 +14,6 @@ createRoot(document.getElementById("root")!).render(
 	<StrictMode>
 		<GlobalStyles />
 		<Reset />
-		<Ui />
+		<Root />
 	</StrictMode>
 );

@@ -24,7 +24,7 @@ async function getSynth(synthIndex: number): Promise<Synth> {
 	return synth;
 }
 
-export function Ui(): JSX.Element {
+export function Root(): JSX.Element {
 	const [synthIndex, setSynthIndex] = useState(0);
 
 	return (
