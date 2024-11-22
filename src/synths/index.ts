@@ -1,7 +1,7 @@
 import * as panFlute from "./pan-flute";
 import * as squareWave from "./square-wave";
 
-interface SynthImplementation {
+export interface SynthImplementation {
 	readonly name: string;
 	readonly processorKey: string;
 	readonly workerUrl: string;

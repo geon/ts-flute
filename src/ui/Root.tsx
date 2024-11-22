@@ -8,6 +8,10 @@ import { getSynth } from "../synth-api";
 
 export function Root(): JSX.Element {
 	const [synthIndex, setSynthIndex] = useState(0);
+	const synthImplementation = synthImplementations[synthIndex];
+	if (!synthImplementation) {
+		throw new Error("Not a valid synth selection.");
+	}
 
 	return (
 		<div>
@@ -29,7 +33,7 @@ export function Root(): JSX.Element {
 											event.data,
 											event.timeStamp
 										);
-										(await getSynth(synthIndex)).postMessage(message);
+										(await getSynth(synthImplementation)).postMessage(message);
 								  };
 						});
 					}}
@@ -43,7 +47,7 @@ export function Root(): JSX.Element {
 			/>
 			<Claviature
 				makeNoteStartEventHandler={(note: number) => async () => {
-					(await getSynth(synthIndex)).postMessage({
+					(await getSynth(synthImplementation)).postMessage({
 						type: "noteon",
 						number: note,
 						value: 0,
@@ -52,7 +56,7 @@ export function Root(): JSX.Element {
 					});
 				}}
 				makeNoteStopEventHandler={(note: number) => async () => {
-					(await getSynth(synthIndex)).postMessage({
+					(await getSynth(synthImplementation)).postMessage({
 						type: "noteoff",
 						number: note,
 						value: 0,

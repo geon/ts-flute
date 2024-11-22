@@ -1,13 +1,10 @@
 import { MidiMessage } from "./midi-message";
-import { synthImplementations } from "./synths";
+import { SynthImplementation } from "./synths";
 
 const synthCache = new Map<string, Synth>();
-export async function getSynth(synthIndex: number): Promise<Synth> {
-	const synthImplementation = synthImplementations[synthIndex];
-	if (!synthImplementation) {
-		throw new Error("Not a valid synth selection.");
-	}
-
+export async function getSynth(
+	synthImplementation: SynthImplementation
+): Promise<Synth> {
 	let synth = synthCache.get(synthImplementation.workerUrl);
 	if (!synth) {
 		synth = await Synth.create(
