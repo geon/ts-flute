@@ -1,9 +1,9 @@
 import { MidiMessage } from "./midi-message";
-import { synths } from "./synths";
+import { synthImplementations } from "./synths";
 
 const synthCache = new Map<string, Synth>();
 export async function getSynth(synthIndex: number): Promise<Synth> {
-	const selectedSynth = synths[synthIndex];
+	const selectedSynth = synthImplementations[synthIndex];
 	if (!selectedSynth) {
 		throw new Error("Not a valid synth selection.");
 	}

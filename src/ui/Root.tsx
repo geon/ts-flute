@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Claviature } from "./Claviature";
-import { synths } from "../synths";
+import { synthImplementations } from "../synths";
 import { GithubRibbon } from "./github-ribbon";
 import { Select } from "./Select";
 import { makeMidiMessageFromMidiArray } from "../midi-message";
@@ -39,7 +39,7 @@ export function Root(): JSX.Element {
 			<Select
 				value={synthIndex.toString()}
 				onChange={setSynthIndex}
-				options={synths.map((x) => x.name)}
+				options={synthImplementations.map((x) => x.name)}
 			/>
 			<Claviature
 				makeNoteStartEventHandler={(note: number) => async () => {

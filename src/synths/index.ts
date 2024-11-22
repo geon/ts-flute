@@ -7,4 +7,7 @@ interface SynthImplementation {
 	readonly workerUrl: string;
 }
 
-export const synths: readonly SynthImplementation[] = [panFlute, squareWave];
+export const synthImplementations: readonly SynthImplementation[] = [
+	panFlute,
+	squareWave,
+];
