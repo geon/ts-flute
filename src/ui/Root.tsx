@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import { Claviature } from "./Claviature";
-import { synthImplementations } from "../synths";
+import { getSynth, synthImplementations } from "../synths";
 import { GithubRibbon } from "./github-ribbon";
 import { Select } from "./Select";
 import { makeMidiMessageFromMidiArray } from "../midi-message";
-import { getSynth } from "../synth-api";
 
 export function Root(): JSX.Element {
 	const [synthIndex, setSynthIndex] = useState(0);

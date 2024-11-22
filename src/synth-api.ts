@@ -1,20 +1,4 @@
 import { MidiMessage } from "./midi-message";
-import { SynthImplementation } from "./synths";
-
-const synthCache = new Map<string, Synth>();
-export async function getSynth(
-	synthImplementation: SynthImplementation
-): Promise<Synth> {
-	let synth = synthCache.get(synthImplementation.workerUrl);
-	if (!synth) {
-		synth = await Synth.create(
-			synthImplementation.processorKey,
-			synthImplementation.workerUrl
-		);
-		synthCache.set(synthImplementation.workerUrl, synth);
-	}
-	return synth;
-}
 
 export class Synth {
 	constructor(private audioWorkletNode: AudioWorkletNode) {}
