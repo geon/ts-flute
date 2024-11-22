@@ -10,7 +10,7 @@ export async function getSynth(synthIndex: number): Promise<Synth> {
 
 	let synth = synthCache.get(selectedSynth.workerUrl);
 	if (!synth) {
-		synth = await createSynth(
+		synth = await Synth.create(
 			selectedSynth.processorKey,
 			selectedSynth.workerUrl
 		);
@@ -22,22 +22,28 @@ export async function getSynth(synthIndex: number): Promise<Synth> {
 export class Synth {
 	constructor(private audioWorkletNode: AudioWorkletNode) {}
 
+	static async create(
+		processorKey: string,
+		processorUrl: string
+	): Promise<Synth> {
+		const context = new AudioContext();
+		await context.audioWorklet.addModule(processorUrl);
+		const processorOptions: ProcessorOptions = {
+			sampleRate: context.sampleRate,
+		};
+		const options: AudioWorkletNodeOptions = { processorOptions };
+		const audioWorkletNode = new AudioWorkletNode(
+			context,
+			processorKey,
+			options
+		);
+		audioWorkletNode.connect(context.destination);
+		return new Synth(audioWorkletNode);
+	}
+
 	postMessage(message: MidiMessage): void {
 		this.audioWorkletNode.port.postMessage(message);
 	}
-}
-
-export async function createSynth(
-	processorKey: string,
-	processorUrl: string
-): Promise<Synth> {
-	const context = new AudioContext();
-	await context.audioWorklet.addModule(processorUrl);
-	const processorOptions: ProcessorOptions = { sampleRate: context.sampleRate };
-	const options: AudioWorkletNodeOptions = { processorOptions };
-	const audioWorkletNode = new AudioWorkletNode(context, processorKey, options);
-	audioWorkletNode.connect(context.destination);
-	return new Synth(audioWorkletNode);
 }
 
 export type SynthGenerator = Generator<number, never, MidiMessage | undefined>;
