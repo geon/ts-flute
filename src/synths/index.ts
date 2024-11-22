@@ -1,4 +1,4 @@
-import { Synth } from "../synth-api";
+import { Synth } from "../Synth";
 import * as panFlute from "./pan-flute";
 import * as squareWave from "./square-wave";
 

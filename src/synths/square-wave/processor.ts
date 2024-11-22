@@ -1,4 +1,4 @@
-import { SynthGenerator, createGeneratorProcessor } from "../../synth-api";
+import { SynthGenerator, createGeneratorProcessor } from "../../Synth";
 import { frequencyFromMidiNoteNumber } from "../../utils";
 
 export const name = "Square Wave";

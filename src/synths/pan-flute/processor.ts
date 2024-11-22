@@ -1,4 +1,4 @@
-import { SynthGenerator, createGeneratorProcessor } from "../../synth-api";
+import { SynthGenerator, createGeneratorProcessor } from "../../Synth";
 import { ChamberlinOscillator } from "../../ChamberlinOscillator";
 import { Interpolator } from "../../Interpolator";
 import { frequencyFromMidiNoteNumber } from "../../utils";
