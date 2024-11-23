@@ -4,8 +4,12 @@ export function frequencyFromMidiNoteNumber(noteNumber: number): number {
 
 export const speedOfSound = 343; // m/s
 
+export function getSamplesPerMeter(sampleRate: number) {
+	return sampleRate / speedOfSound;
+}
+
 export function getNumSamplesForPipe(sampleRate: number, frequency: number) {
-	const samplesPerMeter = sampleRate / speedOfSound;
+	const samplesPerMeter = getSamplesPerMeter(sampleRate);
 	const length = speedOfSound / frequency;
 	const numSamples = length * samplesPerMeter;
 	return numSamples;
