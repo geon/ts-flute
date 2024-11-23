@@ -1,6 +1,5 @@
 import React from "react";
-
-const middleCMidiNumber = 60;
+import { middleCMidiNumber } from "../utils";
 
 const notes = [
 	{
