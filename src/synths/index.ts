@@ -15,10 +15,11 @@ export const synthImplementations: readonly SynthImplementation[] = [
 
 const synthCache = new Map<string, Synth>();
 export async function getSynth(
-	synthImplementation: SynthImplementation
-): Promise<Synth> {
+	synthImplementation: SynthImplementation,
+	allowedToCreate: boolean = false
+): Promise<Synth | undefined> {
 	let synth = synthCache.get(synthImplementation.workerUrl);
-	if (!synth) {
+	if (!synth && allowedToCreate) {
 		synth = await Synth.create(
 			synthImplementation.processorKey,
 			synthImplementation.workerUrl

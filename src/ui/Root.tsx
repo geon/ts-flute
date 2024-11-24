@@ -32,7 +32,7 @@ export function Root(): JSX.Element {
 											event.data,
 											event.timeStamp
 										);
-										(await getSynth(synthImplementation)).postMessage(message);
+										(await getSynth(synthImplementation))?.postMessage(message);
 								  };
 						});
 					}}
@@ -46,7 +46,7 @@ export function Root(): JSX.Element {
 			/>
 			<Claviature
 				makeNoteStartEventHandler={(note: number) => async () => {
-					(await getSynth(synthImplementation)).postMessage({
+					(await getSynth(synthImplementation, true))?.postMessage({
 						type: "noteon",
 						number: note,
 						value: 0,
@@ -55,7 +55,7 @@ export function Root(): JSX.Element {
 					});
 				}}
 				makeNoteStopEventHandler={(note: number) => async () => {
-					(await getSynth(synthImplementation)).postMessage({
+					(await getSynth(synthImplementation))?.postMessage({
 						type: "noteoff",
 						number: note,
 						value: 0,
