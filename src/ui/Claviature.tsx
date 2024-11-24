@@ -180,6 +180,7 @@ function Key(props: {
 			<button
 				onPointerDown={props.makeNoteStartEventHandler(props.midiNumber)}
 				onPointerUp={props.makeNoteStopEventHandler(props.midiNumber)}
+				onPointerLeave={props.makeNoteStopEventHandler(props.midiNumber)}
 			>
 				{props.label}
 			</button>
