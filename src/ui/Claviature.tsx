@@ -77,7 +77,7 @@ const KeyStyle = styled.div`
 `;
 const BlackKeys = styled.div``;
 const WhiteKeys = styled.div``;
-const gap = "20px";
+const gap = "10px";
 const ClaviatureStyle = styled.div`
 	box-sizing: border-box;
 	padding: ${gap};
