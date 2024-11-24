@@ -1,5 +1,6 @@
 import React from "react";
 import { middleCMidiNumber } from "../utils";
+import styled from "styled-components";
 
 const notes = [
 	{
@@ -56,6 +57,11 @@ const sharps = [
 	undefined,
 ];
 
+const KeyStyle = styled.button``;
+const BlackKeys = styled.div``;
+const WhiteKeys = styled.div``;
+const ClaviatureStyle = styled.div``;
+
 export function Claviature(props: {
 	readonly makeNoteStartEventHandler: (
 		midiNumber: number
@@ -65,8 +71,8 @@ export function Claviature(props: {
 	) => React.MouseEventHandler<HTMLButtonElement>;
 }): JSX.Element {
 	return (
-		<div>
-			<div>
+		<ClaviatureStyle>
+			<BlackKeys>
 				{sharps.map((sharp, index) => {
 					if (!sharp) {
 						return <span key={"_" + index} />;
@@ -82,8 +88,8 @@ export function Claviature(props: {
 						/>
 					);
 				})}
-			</div>
-			<div>
+			</BlackKeys>
+			<WhiteKeys>
 				{notes.map(({ name, midiNumber }) => (
 					<Key
 						key={midiNumber}
@@ -93,8 +99,8 @@ export function Claviature(props: {
 						makeNoteStopEventHandler={props.makeNoteStopEventHandler}
 					/>
 				))}
-			</div>
-		</div>
+			</WhiteKeys>
+		</ClaviatureStyle>
 	);
 }
 
@@ -109,11 +115,11 @@ function Key(props: {
 	) => React.MouseEventHandler<HTMLButtonElement>;
 }): React.JSX.Element {
 	return (
-		<button
+		<KeyStyle
 			onPointerDown={props.makeNoteStartEventHandler(props.midiNumber)}
 			onPointerUp={props.makeNoteStopEventHandler(props.midiNumber)}
 		>
 			{props.label}
-		</button>
+		</KeyStyle>
 	);
 }
