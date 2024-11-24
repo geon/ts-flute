@@ -1,4 +1,8 @@
-import { SynthGenerator, createGeneratorProcessor } from "../../Synth";
+import {
+	SynthGenerator,
+	createGeneratorProcessor,
+	makePolyphonic,
+} from "../../Synth";
 import { ChamberlinOscillator } from "../../ChamberlinOscillator";
 import { Interpolator } from "../../Interpolator";
 import { frequencyFromMidiNoteNumber, getNumSamplesForPipe } from "../../utils";
@@ -43,28 +47,23 @@ class PanFlutePipe {
 	}
 }
 
-function* makeFlute(sampleRate: number): SynthGenerator {
-	const pipes = new Map<number, PanFlutePipe>();
+function* makeFlutePipe(sampleRate: number): SynthGenerator {
+	let pipe: PanFlutePipe | undefined;
 
 	for (;;) {
-		const sumPressure = [...pipes.values()]
-			.map((pipe) => pipe.step())
-			.reduce((a, b) => a + b, 0);
-		const midiMessage = yield sumPressure * 0.2;
+		const midiMessage = yield (pipe?.step() ?? 0) * 0.5;
 		if (midiMessage) {
-			let pipe = pipes.get(midiMessage.number);
-			if (!pipe) {
-				const frequency = frequencyFromMidiNoteNumber(midiMessage.number);
-				pipe = new PanFlutePipe(sampleRate, frequency);
-				pipes.set(midiMessage.number, pipe);
-			}
 			switch (midiMessage.type) {
 				case "noteon": {
+					if (!pipe) {
+						const frequency = frequencyFromMidiNoteNumber(midiMessage.number);
+						pipe = new PanFlutePipe(sampleRate, frequency);
+					}
 					pipe.setVolumeTarget(0.7, 0.06);
 					break;
 				}
 				case "noteoff": {
-					pipe.setVolumeTarget(0, 0.02);
+					pipe?.setVolumeTarget(0, 0.02);
 					break;
 				}
 			}
@@ -73,5 +72,5 @@ function* makeFlute(sampleRate: number): SynthGenerator {
 }
 
 export function register() {
-	createGeneratorProcessor(processorKey, makeFlute);
+	createGeneratorProcessor(processorKey, makePolyphonic(makeFlutePipe));
 }
