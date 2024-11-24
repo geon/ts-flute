@@ -71,3 +71,36 @@ export function createGeneratorProcessor(
 
 	registerProcessor(processorKey, GeneratorProcessor);
 }
+
+export function makePolyphonic(
+	makeMonophonic: (sampleRate: number) => SynthGenerator
+): (sampleRate: number) => SynthGenerator {
+	return function* () {
+		const monophonics = new Map<number, SynthGenerator>();
+
+		let sum: number = 0;
+		for (;;) {
+			const midiMessage = yield sum;
+
+			if (midiMessage) {
+				let monophonic = monophonics.get(midiMessage.number);
+				if (!monophonic) {
+					monophonic = makeMonophonic(sampleRate);
+					monophonics.set(midiMessage.number, monophonic);
+
+					// Prime it so it is ready to recieve midi messages.
+					monophonic.next();
+				}
+			}
+
+			sum = [...monophonics.entries()]
+				.map(
+					([key, oscillator]) =>
+						oscillator.next(
+							key === midiMessage?.number ? midiMessage : undefined
+						).value
+				)
+				.reduce((a, b) => a + b, 0);
+		}
+	};
+}

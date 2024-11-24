@@ -1,47 +1,40 @@
-import { SynthGenerator, createGeneratorProcessor } from "../../Synth";
+import {
+	SynthGenerator,
+	createGeneratorProcessor,
+	makePolyphonic,
+} from "../../Synth";
 import { frequencyFromMidiNoteNumber } from "../../utils";
 
 export const name = "Square Wave";
 export const processorKey = "square-wave";
 
-function* makeSquareWave(samplesPerHalfPeriod: number): SynthGenerator {
+function* makeSquareWave(sampleRate: number): SynthGenerator {
 	let value = 1;
+	let volume = 0;
+	let samplesPerHalfPeriod = 1;
 	for (;;) {
 		for (let i = 0; i < samplesPerHalfPeriod; ++i) {
-			yield value;
+			const midiMessage = yield value * volume * 0.15;
+
+			if (midiMessage) {
+				switch (midiMessage.type) {
+					case "noteon": {
+						const frequency = frequencyFromMidiNoteNumber(midiMessage.number);
+						samplesPerHalfPeriod = (sampleRate / frequency) * 0.5;
+						volume = 1;
+						break;
+					}
+					case "noteoff": {
+						volume = 0;
+						break;
+					}
+				}
+			}
 		}
 		value *= -1;
 	}
 }
 
-function* makeSquareWaves(sampleRate: number): SynthGenerator {
-	const oscillators = new Map<number, SynthGenerator>();
-
-	for (;;) {
-		const sumPressure = [...oscillators.values()]
-			.map((oscillator) => oscillator.next().value)
-			.reduce((a, b) => a + b, 0);
-		const midiMessage = yield sumPressure * 0.15;
-		if (midiMessage) {
-			let oscillator = oscillators.get(midiMessage.number);
-			switch (midiMessage.type) {
-				case "noteon": {
-					if (!oscillator) {
-						const frequency = frequencyFromMidiNoteNumber(midiMessage.number);
-						oscillator = makeSquareWave((sampleRate / frequency) * 0.5);
-						oscillators.set(midiMessage.number, oscillator);
-					}
-					break;
-				}
-				case "noteoff": {
-					oscillators.delete(midiMessage.number);
-					break;
-				}
-			}
-		}
-	}
-}
-
 export function register() {
-	createGeneratorProcessor(processorKey, makeSquareWaves);
+	createGeneratorProcessor(processorKey, makePolyphonic(makeSquareWave));
 }
