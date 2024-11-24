@@ -111,13 +111,13 @@ const ClaviatureStyle = styled.div`
 	${BlackKeys} {
 		${KeyStyle} {
 			color: white;
-			background-color: black;
+			background: linear-gradient(0, #333, black, black);
 		}
 	}
 	${WhiteKeys} {
 		${KeyStyle} {
 			color: black;
-			background-color: white;
+			background: linear-gradient(0, white, white, #eee);
 		}
 	}
 `;
