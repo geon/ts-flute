@@ -107,6 +107,10 @@ const ClaviatureStyle = styled.div`
 			flex-basis: 50%;
 		}
 	}
+	${WhiteKeys} {
+		padding: 0 calc(${gap} / 2);
+		box-sizing: border-box;
+	}
 
 	${BlackKeys} {
 		${KeyStyle} {
