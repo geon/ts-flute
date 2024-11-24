@@ -57,10 +57,57 @@ const sharps = [
 	undefined,
 ];
 
-const KeyStyle = styled.button``;
+const Spacer = styled.span``;
+const KeyStyle = styled.button`
+	height: 200px;
+	border-radius: 10000px;
+`;
 const BlackKeys = styled.div``;
 const WhiteKeys = styled.div``;
-const ClaviatureStyle = styled.div``;
+const gap = "20px";
+const ClaviatureStyle = styled.div`
+	box-sizing: border-box;
+	padding: ${gap};
+
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	gap: ${gap};
+
+	${BlackKeys},
+	${WhiteKeys} {
+		width: 100%;
+		display: flex;
+		flex-direction: row;
+		align-items: stretch;
+		gap: ${gap};
+
+		${KeyStyle}, ${Spacer} {
+			flex-basis: 100%;
+			/* flex: 1 1 auto; */
+		}
+	}
+	${BlackKeys} > ${Spacer} {
+		&:first-child,
+		&:last-child {
+			flex-basis: 50%;
+		}
+	}
+
+	${BlackKeys} {
+		${KeyStyle} {
+			color: white;
+			background-color: black;
+		}
+	}
+	${WhiteKeys} {
+		${KeyStyle} {
+			color: black;
+			background-color: white;
+		}
+	}
+`;
 
 export function Claviature(props: {
 	readonly makeNoteStartEventHandler: (
@@ -73,9 +120,10 @@ export function Claviature(props: {
 	return (
 		<ClaviatureStyle>
 			<BlackKeys>
+				<Spacer />
 				{sharps.map((sharp, index) => {
 					if (!sharp) {
-						return <span key={"_" + index} />;
+						return <Spacer key={"_" + index} />;
 					}
 					const { name, midiNumber } = sharp;
 					return (
