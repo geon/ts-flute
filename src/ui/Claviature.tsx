@@ -58,9 +58,22 @@ const sharps = [
 ];
 
 const Spacer = styled.span``;
-const KeyStyle = styled.button`
+const KeyStyle = styled.div`
 	height: 200px;
 	border-radius: 10000px;
+	box-sizing: border-box;
+
+	box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 1) inset,
+		1px 2px 2px 0px rgba(255, 255, 255, 0.5) inset,
+		-1px -2px 2px 0px rgba(0, 0, 0, 0.3) inset;
+
+	& > * {
+		width: 100%;
+		height: 100%;
+		background: none;
+		border: none;
+		color: inherit;
+	}
 `;
 const BlackKeys = styled.div``;
 const WhiteKeys = styled.div``;
@@ -163,11 +176,13 @@ function Key(props: {
 	) => React.MouseEventHandler<HTMLButtonElement>;
 }): React.JSX.Element {
 	return (
-		<KeyStyle
-			onPointerDown={props.makeNoteStartEventHandler(props.midiNumber)}
-			onPointerUp={props.makeNoteStopEventHandler(props.midiNumber)}
-		>
-			{props.label}
+		<KeyStyle>
+			<button
+				onPointerDown={props.makeNoteStartEventHandler(props.midiNumber)}
+				onPointerUp={props.makeNoteStopEventHandler(props.midiNumber)}
+			>
+				{props.label}
+			</button>
 		</KeyStyle>
 	);
 }
