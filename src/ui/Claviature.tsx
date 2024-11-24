@@ -73,27 +73,47 @@ export function Claviature(props: {
 					}
 					const { name, midiNumber } = sharp;
 					return (
-						<button
+						<Key
 							key={midiNumber}
-							onPointerDown={props.makeNoteStartEventHandler(midiNumber)}
-							onPointerUp={props.makeNoteStopEventHandler(midiNumber)}
-						>
-							{name}
-						</button>
+							label={name}
+							midiNumber={midiNumber}
+							makeNoteStartEventHandler={props.makeNoteStartEventHandler}
+							makeNoteStopEventHandler={props.makeNoteStopEventHandler}
+						/>
 					);
 				})}
 			</div>
 			<div>
 				{notes.map(({ name, midiNumber }) => (
-					<button
+					<Key
 						key={midiNumber}
-						onPointerDown={props.makeNoteStartEventHandler(midiNumber)}
-						onPointerUp={props.makeNoteStopEventHandler(midiNumber)}
-					>
-						{name}
-					</button>
+						label={name}
+						midiNumber={midiNumber}
+						makeNoteStartEventHandler={props.makeNoteStartEventHandler}
+						makeNoteStopEventHandler={props.makeNoteStopEventHandler}
+					/>
 				))}
 			</div>
 		</div>
+	);
+}
+
+function Key(props: {
+	readonly midiNumber: number;
+	readonly label: string;
+	readonly makeNoteStartEventHandler: (
+		midiNumber: number
+	) => React.MouseEventHandler<HTMLButtonElement>;
+	readonly makeNoteStopEventHandler: (
+		midiNumber: number
+	) => React.MouseEventHandler<HTMLButtonElement>;
+}): React.JSX.Element {
+	return (
+		<button
+			onPointerDown={props.makeNoteStartEventHandler(props.midiNumber)}
+			onPointerUp={props.makeNoteStopEventHandler(props.midiNumber)}
+		>
+			{props.label}
+		</button>
 	);
 }
