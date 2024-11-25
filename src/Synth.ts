@@ -3,11 +3,20 @@ import { MidiMessage } from "./midi-message";
 export class Synth {
 	constructor(private audioWorkletNode: AudioWorkletNode) {}
 
+	static context: AudioContext | undefined = undefined;
+	static getCommonAudioContext(): AudioContext {
+		if (!Synth.context) {
+			Synth.context = new AudioContext();
+		}
+
+		return Synth.context;
+	}
+
 	static async create(
 		processorKey: string,
 		processorUrl: string
 	): Promise<Synth> {
-		const context = new AudioContext();
+		const context = Synth.getCommonAudioContext();
 		await context.audioWorklet.addModule(processorUrl);
 		const processorOptions: ProcessorOptions = {
 			sampleRate: context.sampleRate,
