@@ -1,3 +1,4 @@
+import { MidiMessage } from "../midi-message";
 import { Synth } from "../Synth";
 import * as panFlute from "./pan-flute";
 import * as squareWave from "./square-wave";
@@ -27,4 +28,16 @@ export async function getSynth(
 		synthCache.set(synthImplementation.workerUrl, synth);
 	}
 	return synth;
+}
+
+export function postMessage(
+	synthImplementation: SynthImplementation,
+	message: MidiMessage,
+	allowedToCreate: boolean = false
+): void {
+	Synth.getCommonAudioContext().resume();
+	(async () =>
+		(await getSynth(synthImplementation, allowedToCreate))?.postMessage(
+			message
+		))();
 }

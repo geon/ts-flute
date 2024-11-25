@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Claviature } from "./Claviature";
-import { getSynth, synthImplementations } from "../synths";
+import { getSynth, synthImplementations, postMessage } from "../synths";
 import { GithubRibbon } from "./github-ribbon";
 import { Select } from "./Select";
 import { makeMidiMessageFromMidiArray } from "../midi-message";
@@ -45,23 +45,31 @@ export function Root(): JSX.Element {
 				options={synthImplementations.map((x) => x.name)}
 			/>
 			<Claviature
-				makeNoteStartEventHandler={(note: number) => async () => {
-					(await getSynth(synthImplementation, true))?.postMessage({
-						type: "noteon",
-						number: note,
-						value: 0,
-						channel: 0,
-						timestamp: 0,
-					});
+				makeNoteStartEventHandler={(note: number) => () => {
+					postMessage(
+						synthImplementation,
+						{
+							type: "noteon",
+							number: note,
+							value: 0,
+							channel: 0,
+							timestamp: 0,
+						},
+						true
+					);
 				}}
-				makeNoteStopEventHandler={(note: number) => async () => {
-					(await getSynth(synthImplementation))?.postMessage({
-						type: "noteoff",
-						number: note,
-						value: 0,
-						channel: 0,
-						timestamp: 0,
-					});
+				makeNoteStopEventHandler={(note: number) => () => {
+					postMessage(
+						synthImplementation,
+						{
+							type: "noteoff",
+							number: note,
+							value: 0,
+							channel: 0,
+							timestamp: 0,
+						},
+						true
+					);
 				}}
 			/>
 		</div>
