@@ -320,5 +320,10 @@ table {
 	html {
 		/* Prevent dragging and long pressing from selecting on mobile Safari. */
 		user-select: none;
+		-webkit-user-select: none;
+
+		/* Prevents scrolling and bounce on mobile Safari. */
+		overflow: hidden;
+		position: fixed;
 	}
 `;Gf(document.getElementById("root")).render(I.createElement(Un.StrictMode,null,I.createElement(d0,null),I.createElement(f0,null),I.createElement(a0,null)));
