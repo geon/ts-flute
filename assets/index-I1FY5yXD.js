@@ -322,8 +322,10 @@ table {
 		user-select: none;
 		-webkit-user-select: none;
 
+		/* Prevent long-press popup on mobile Safari. */		
+		-webkit-touch-callout: none;
+
 		/* Prevents scrolling and bounce on mobile Safari. */
 		overflow: hidden;
-		position: fixed;
 	}
 `;Gf(document.getElementById("root")).render(I.createElement(Un.StrictMode,null,I.createElement(d0,null),I.createElement(f0,null),I.createElement(a0,null)));
