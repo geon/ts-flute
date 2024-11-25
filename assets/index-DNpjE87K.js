@@ -323,6 +323,5 @@ table {
 
 	/* Prevents scrolling and bounce on mobile Safari. */
 	overflow: hidden;
-	position: fixed;
   }
 `;Gf(document.getElementById("root")).render(I.createElement(Un.StrictMode,null,I.createElement(f0,null),I.createElement(c0,null),I.createElement(s0,null)));
