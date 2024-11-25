@@ -6,6 +6,9 @@ export const GlobalStyles = createGlobalStyle`
 		user-select: none;
 		-webkit-user-select: none;
 
+		/* Prevent long-press popup on mobile Safari. */		
+		-webkit-touch-callout: none;
+
 		/* Prevents scrolling and bounce on mobile Safari. */
 		overflow: hidden;
 	}
